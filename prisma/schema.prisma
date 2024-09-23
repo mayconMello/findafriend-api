@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Org {
+  id String @id @default(uuid())
+
+  owner         String
+  name          String
+  whatsapp      String
+  email         String
+  password_hash String
+
+  cep          String
+  address      String
+  city         String
+  state        String
+  neighborhood String
+
+  latitude  Decimal
+  longitude Decimal
+
+  pets Pet[]
+
+  @@map("orgs")
+}
+
+enum AgeCategory {
+  puppy
+  adult
+  senior
+}
+
+enum EnergyLevel {
+  low
+  medium
+  high
+  very_high
+}
+
+enum Environment {
+  indoor
+  outdoor
+  both
+  farm
+  small_space
+}
+
+enum Size {
+  small
+  medium
+  large
+  extra_large
+}
+
+model Pet {
+  id String @id @default(uuid())
+
+  name         String
+  description  String
+  age          AgeCategory
+  size         Size
+  breed        String
+  energy_level EnergyLevel
+  environment  Environment
+
+  org_id String
+  org    Org    @relation(fields: [org_id], references: [id])
+
+  @@map("pets")
+}
